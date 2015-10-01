@@ -1,1 +1,2 @@
-Repositorio para armazenar Algoritmos em C++ e Python
+Repository to store algorithms in C++ and Python
+
