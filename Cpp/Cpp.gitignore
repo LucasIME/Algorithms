@@ -53,3 +53,7 @@
 *.out
 
 *.app
+
+#Mac
+
+.DS_Store
