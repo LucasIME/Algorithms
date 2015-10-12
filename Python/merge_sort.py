@@ -11,7 +11,7 @@ def merge(v, p, q, r):
 		else:
 			v[k] = l2[j]
 			j+=1
-			
+
 def merge_sort(v, i, j):
 	if i < j:
 		mid = (i+j)//2
