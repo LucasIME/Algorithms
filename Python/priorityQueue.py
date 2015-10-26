@@ -5,18 +5,20 @@ class priorityQueue():
         self.map = {}
         self.size = 0
 
+    def __swap__(self, i, j):
+        self.map[self.heap[i][1]], self.map[self.heap[j][1]] = j, i
+        self.heap[i], self.heap[j] = self.heap[j], self.heap[i]
+
     def __up__(self, i):
         while i > 1:
             if self.heap[i][0] < self.heap[i//2][0]:
-                self.map[self.heap[i][1]], self.map[self.heap[i//2][1]] = i//2, i
-                self.heap[i], self.heap[i//2] = self.heap[i//2], self.heap[i]
+                self.__swap__(i, i//2)
             i//=2
     def __down__(self, i):
         while 2*i <= self.size:
             minSonIndex = self.__minChild__(i)
-            if self.heap[i][0] > self.heap[minSonIndex]:
-                self.heap[i], self.heap[minSonIndex] = self.heap[minSonIndex] , self.heap[i]
-                self.map[self.heap[i][1]], self.map[self.heap[minSonIndex][1]] = minSonIndex, i
+            if self.heap[i][0] > self.heap[minSonIndex][0]:
+                self.__swap__(i, minSonIndex)
                 i = minSonIndex
             else:
                 break
@@ -29,6 +31,7 @@ class priorityQueue():
                 return 2*i
             else:
                 return 2*i+1
+
     def insert(self, x):
         self.heap.append(x)
         self.size +=1
@@ -37,7 +40,8 @@ class priorityQueue():
 
     def extractMin(self):
         resp = self.heap[1][1]
-        self.heap[1] = self.heap[-1]
+        self.__swap__(1, -1)
+        del self.map[self.heap[-1][1]]
         del self.heap[-1]
         self.size-=1
         self.__down__(1)
@@ -56,8 +60,8 @@ def main():
     a.insert((0, 'zero'))
     a.decreaseKey(-2, 'teste')
     a.decreaseKey(-200, 123)
-    print(a.heap)
     while a.size > 0:
+        print(a.heap, a.map)
         print(a.extractMin())
 
 if __name__ == '__main__':
