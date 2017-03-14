@@ -5,68 +5,59 @@
 using namespace std;
 
 template<typename T>
-class Node{
+class disjoint_set{
 public:
-  T val;
-  T parent;
-  int h;
-
-  Node(T x){
-      this->val = x;
-      this->parent = NULL;
-      this->h = 1;
-  }
-};
-
-template<typename T>
-class disjointSet{
-public:
-  map<T, Node<T>* > dic;
-  disjointSet(){
-  }
-
-  void makeSet(T x){
-    this->dic[x] = new Node<T>(x);
-  }
-
-  T findSet(T x){
-    Node<T> *node = this->dic[x];
-    while(node->parent != NULL) node = this->dic[node->parent];
-    return node->val;
-  }
-
-  void unite(T x, T y){
-    Node<T> *rx = this->dic[this->findSet(x)];
-    Node<T> *ry = this->dic[this->findSet(y)];
-    if(rx->h < ry->h) rx->parent = ry->val;
-    else if (rx->h > ry->h) ry->parent = rx->val;
-    else{
-      ry->parent = rx->val;
-      rx->h++;
+    T val;
+    disjoint_set<T> *parent;
+    int h;
+    
+    disjoint_set(T x){
+        this->val = x;
+        this->parent = NULL;
+        this->h = 1;
     }
-  }
-
+    
+    
+    disjoint_set<T>* findSet(){
+        disjoint_set<T> *node = this;
+        while(node->parent != NULL) node = node->parent;
+        return node;
+    }
+    
+    void unite(disjoint_set<T> *y){
+        disjoint_set<T> *rx = this;
+        disjoint_set<T> *ry = y;
+        rx =  rx->findSet();
+        ry = ry->findSet();
+        if(rx->h < ry->h) rx->parent = ry;
+        else if (rx->h > ry->h) ry->parent = rx;
+        else{
+            ry->parent = rx;
+            rx->h++;
+        }
+    }
+    
 };
 
 int main(){
-  disjointSet<int> s;
-  s.makeSet(3);
-  s.makeSet(7);
-  s.makeSet(4);
-  s.makeSet(5);
-  s.makeSet(6);
-  s.makeSet(20);
-  s.makeSet(2);
-  s.makeSet(9);
-  s.makeSet(16);
-  s.unite(4,9);
-  s.unite(3,7);
-  s.unite(2,16);
-  s.unite(6,5);
-  s.unite(5,20);
-  s.unite(3,5);
-  for (map<int, Node<int>* >::iterator it = s.dic.begin(); it != s.dic.end(); it++){
-    cout << it->first <<  " " <<  it->second->parent << endl;
-  }
-  return 0;
+    map<int, disjoint_set<int> * > m;
+    m[3] = new disjoint_set<int>(3);
+    m[7] = new disjoint_set<int>(7);
+    m[4] = new disjoint_set<int>(4);
+    m[5] = new disjoint_set<int>(5);
+    m[6] = new disjoint_set<int>(6);
+    m[20] = new disjoint_set<int>(20);
+    m[2] = new disjoint_set<int>(2);
+    m[9] = new disjoint_set<int>(9);
+    m[16] = new disjoint_set<int>(16);
+    m[4]->unite(m[9]);
+    m[3]->unite(m[7]);
+    m[2]->unite(m[16]);
+    m[6]->unite(m[5]);
+    m[5]->unite(m[20]);
+    m[3]->unite(m[5]);
+    for (auto x: m){
+        cout << x.first <<  " " <<  x.second->findSet()->val << endl;
+    }
+    return 0;
 }
